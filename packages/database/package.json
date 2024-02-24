@@ -10,10 +10,10 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "seed": "tsx scripts/seed.ts",
-    "migrate": "tsx scripts/migrate.ts",
-    "generate": "drizzle-kit generate:pg",
-    "studio": "drizzle-kit studio"
+    "db:seed": "tsx scripts/seed.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:studio": "drizzle-kit studio",
+    "generate": "drizzle-kit generate:pg"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
