@@ -1,13 +1,16 @@
-# Turborepo starter
+# Turborepo starter with Drizzle ORM and PostgresSQL
 
-This is an official starter Turborepo.
+This is turborepo starter with Drizzle ORM and PostgreSQL pre-configured.
+
+> [!NOTE]
+> This example uses `pnpm` as package manager.
 
 ## Using this example
 
-Run the following command:
+Clone the repository:
 
 ```sh
-npx create-turbo@latest
+git clone https://github.com/htsh-tsyk/turbo-drizzle.git
 ```
 
 ## What's inside?
@@ -16,9 +19,9 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
 - `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/database`: Drizzle ORM wrapper to manage & access your database
+- `@repo/ui`: a stub React component library shared by a `web` application
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
@@ -31,42 +34,62 @@ This Turborepo has some additional tools already setup for you:
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
+- [Drizzle for database ORM](https://orm.drizzle.team/) for database ORM
 
 ### Build
 
 To build all apps and packages, run the following command:
 
 ```
-cd my-turborepo
+cd turbo-drizzle
+cp packages/database/.env.default packages/database/.env
+cp apps/web/.env.default apps/web/.env
+pnpm install
 pnpm build
+```
+
+### Database
+
+We use [Drizzle ORM](https://orm.drizzle.team/) to manage & access our database. As such you will need a database for this project, either locally or hosted in the cloud.
+
+To make this process easier, we offer a [`docker-compose.yml`](https://docs.docker.com/compose/) file to deploy a PostgreSQL server locally with a new database named `repo_development` (To change this update the `POSTGRES_DB` environment variable in the `docker-compose.yml` file):
+
+```bash
+cd turbo-drizzle
+docker-compose up -d
+```
+
+Once deployed you will need to copy the `.env.default` file to `.env` in order for Drizzle to have a `DATABASE_URL` environment variable to access.
+
+```bash
+cp packages/database/.env.default packages/database/.env
+cp apps/web/.env.default apps/web/.env
+```
+
+If you added a custom database name, or use a cloud based database, you will need to update the `DATABASE_URL` in your `.env` accordingly.
+
+Once deployed & up & running, you will need to create & deploy migrations to your database to add the necessary tables. This can be done using [Drizzle Migrate](https://orm.drizzle.team/docs/migrations):
+
+```bash
+pnpm turbo db:migrate
+```
+
+An optional additional step is to seed some initial or fake data to your database.
+
+To do this update check the seed script located in `packages/database/scripts/seed.ts` & add or update any users you wish to seed to the database.
+
+Once edited run the following command to run tell Drizzle to run the seed script defined in the Drizzle configuration:
+
+```bash
+pnpm turbo db:seed
 ```
 
 ### Develop
 
 To develop all apps and packages, run the following command:
 
-```
-cd my-turborepo
+```shell
 pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
 ```
 
 ## Useful Links
