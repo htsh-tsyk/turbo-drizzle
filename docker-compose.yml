@@ -1,0 +1,18 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: repo_development
+    volumes:
+      - chips-db-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - app_network
+networks:
+  app_network:
+    external: true
+volumes:
+  chips-db-data:
